@@ -4,19 +4,15 @@ const path = require("path");
 dotenv.config();
 const mysql = require("mysql");
 const app = express();
+
 const connection = mysql.createConnection({
-  host: "127.0.0.1", // Change this to your MySQL server address
+  port: 3306,
+  host: "103.110.127.141", // Change this to your MySQL server address
   user: "beatlebuddy_kj_user", // Change this to your MySQL username
   password: "%@?AuQl[.(9[", // Change this to your MySQL password
   database: "beatlebuddy_kj", // Change this to your MySQL database name
 });
-connection.connect((error) => {
-  if (error) {
-    console.error("Error connecting to MySQL database:", error);
-  } else {
-    console.log("Connected to MySQL database!");
-  }
-});
+
 const baseUploadsPath = path.join(__dirname, "uploads");
 const cors = require("cors");
 // const videoRoutes=require('./Routes/videoRoutes.js');
@@ -37,7 +33,7 @@ const channelRoutes = require("./Routes/channelRoutes.js");
 const interestRoutes = require("./Routes/interestRoutes.js");
 const liveRoutes = require("./Routes/liveRoutes.js");
 const authRoutes = require("./Routes/authRoutes.js");
-const port = process.env.PORT || 8082;
+const port = process.env.PORT || 3001;
 app.use(express.json());
 app.use(cors());
 
@@ -85,7 +81,14 @@ app.use("/", (req, res) => {
   res.send("<h2>Hello beatlebuddy, Your app is live.");
   console.log("App is live.");
 });
-app.listen(port, () => {
-  console.log(`listening on port:${port}`);
+
+connection.connect((error) => {
+  if (error) {
+    console.error("Error connecting to MySQL database:", error);
+  } else {
+    app.listen(port, () => {
+      console.log(`listening on port:${port}`);
+    });
+    console.log("Connected to MySQL database!");
+  }
 });
-// change envs
