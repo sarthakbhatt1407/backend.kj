@@ -7,7 +7,7 @@ const { adminLogin } = require("../db/AdminActions");
 const { signup, login } = require("../db/UserActions");
 
 const jwtsecret = process.env.JWT_ADMIN_KEY;
-// const creatorsecret = process.env.JWT_CREATOR_KEY;
+const creatorsecret = process.env.JWT_CREATOR_KEY;
 const exp = module.exports;
 
 exp.adminLogin = RouterAsyncErrorHandler(async (req, res, next) => {
@@ -55,10 +55,15 @@ exp.creatorLogin = RouterAsyncErrorHandler(async (req, res, next) => {
     }
 
     // Create a JWT token
-    // const token = jwt.sign({ email: creator.email, isCreator: true });
+    const token = jwt.sign(
+      { email: creator.email, isCreator: true },
+      creatorsecret,
+      { expiresIn: "5h" }
+    );
 
     // Return the token along with a success message
     return res.status(200).json({
+      token,
       creator,
       message: "Creator login successful",
     });
