@@ -81,6 +81,10 @@ app.use("/channels", channelRoutes);
 app.use("/interests", interestRoutes);
 app.use("/lives", liveRoutes);
 app.use("/auth", authRoutes);
+app.use("/", (req, res) => {
+  res.send("<h2>Hello beatlebuddy, Your app is live.");
+  console.log("App is live.");
+});
 app.listen(port, () => {
   console.log(`listening on port:${port}`);
 });
