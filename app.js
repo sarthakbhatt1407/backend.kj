@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const path = require("path");
 dotenv.config();
+const mongoose = require("mongoose");
 const mysql = require("mysql");
 const app = express();
 
@@ -11,10 +12,8 @@ const connection = mysql.createConnection({
   user: "beatlebuddy_kj_user", // Change this to your MySQL username
   password: "%@?AuQl[.(9[", // Change this to your MySQL password
   database: "beatlebuddy_kj", // Change this to your MySQL database name
+  connectTimeout: 10000,
 });
-setInterval(() => {
-  connection.query("SELECT 1");
-}, 10000);
 
 const baseUploadsPath = path.join(__dirname, "uploads");
 const cors = require("cors");
@@ -36,8 +35,8 @@ const channelRoutes = require("./Routes/channelRoutes.js");
 const interestRoutes = require("./Routes/interestRoutes.js");
 const liveRoutes = require("./Routes/liveRoutes.js");
 const authRoutes = require("./Routes/authRoutes.js");
-const { log } = require("util");
-const port = process.env.PORT || 3001;
+
+const port = process.env.PORT || 5001;
 app.use(express.json());
 app.use(cors());
 
