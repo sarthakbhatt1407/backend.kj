@@ -12,9 +12,9 @@ const connection = mysql.createConnection({
   password: "%@?AuQl[.(9[", // Change this to your MySQL password
   database: "beatlebuddy_kj", // Change this to your MySQL database name
 });
-setInterval(() => {
-  connection.query("SELECT 1");
-}, 3600000);
+setInterval(function () {
+  db.query("SELECT 1");
+}, 5000);
 
 const baseUploadsPath = path.join(__dirname, "uploads");
 const cors = require("cors");
