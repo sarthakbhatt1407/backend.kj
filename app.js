@@ -12,6 +12,9 @@ const connection = mysql.createConnection({
   password: "%@?AuQl[.(9[", // Change this to your MySQL password
   database: "beatlebuddy_kj", // Change this to your MySQL database name
 });
+setInterval(() => {
+  connection.query("SELECT 1");
+}, 3600000);
 
 const baseUploadsPath = path.join(__dirname, "uploads");
 const cors = require("cors");
@@ -33,6 +36,7 @@ const channelRoutes = require("./Routes/channelRoutes.js");
 const interestRoutes = require("./Routes/interestRoutes.js");
 const liveRoutes = require("./Routes/liveRoutes.js");
 const authRoutes = require("./Routes/authRoutes.js");
+const { log } = require("util");
 const port = process.env.PORT || 3001;
 app.use(express.json());
 app.use(cors());
