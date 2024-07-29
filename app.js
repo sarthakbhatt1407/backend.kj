@@ -14,7 +14,10 @@ const connection = mysql.createConnection({
   database: "beatlebuddy_kj", // Change this to your MySQL database name
   connectTimeout: 10000,
 });
-
+// 'ping' SQL server every hour to keep connection alive
+setInterval(() => {
+  connection.query("SELECT 1");
+}, 15000);
 const baseUploadsPath = path.join(__dirname, "uploads");
 const cors = require("cors");
 // const videoRoutes=require('./Routes/videoRoutes.js');
