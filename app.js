@@ -2,22 +2,57 @@ const express = require("express");
 const dotenv = require("dotenv");
 const path = require("path");
 dotenv.config();
-const mongoose = require("mongoose");
 const mysql = require("mysql");
 const app = express();
 
-const connection = mysql.createConnection({
-  port: 3306,
-  host: "103.110.127.141", // Change this to your MySQL server address
-  user: "beatlebuddy_kj_user", // Change this to your MySQL username
-  password: "%@?AuQl[.(9[", // Change this to your MySQL password
-  database: "beatlebuddy_kj", // Change this to your MySQL database name
-  connectTimeout: 10000,
-});
-// 'ping' SQL server every hour to keep connection alive
-setInterval(() => {
-  connection.query("SELECT 1");
-}, 15000);
+function handleDisconnect() {
+  const connection = mysql.createConnection({
+    port: 3306,
+    host: "103.110.127.141", // Change this to your MySQL server address
+    user: "beatlebuddy_kj_user", // Change this to your MySQL username
+    password: "%@?AuQl[.(9[", // Change this to your MySQL password
+    database: "beatlebuddy_kj", // Change this to your MySQL database name
+    connectTimeout: 10000,
+  });
+
+  // connection.connect((error) => {
+  //   if (error) {
+  //     console.error("Error connecting to MySQL database:", error);
+  //   } else {
+  //     app.listen(port, () => {
+  //       console.log(`listening on port:${port}`);
+  //     });
+  //     console.log("Connected to MySQL database!");
+  //   }
+  // });
+
+  connection.connect(function (err) {
+    // The server is either down
+    if (err) {
+      // or restarting (takes a while sometimes).
+      console.log("error when connecting to db:", err);
+      setTimeout(handleDisconnect, 2000);
+    } else {
+      app.listen(port, () => {
+        console.log(`listening on port:${port}`);
+      });
+      console.log("Connected to MySQL database!");
+    }
+  });
+  connection.on("error", function (err) {
+    console.log("db error", err);
+    if (err.code === "PROTOCOL_CONNECTION_LOST") {
+      // Connection to the MySQL server is usually
+      handleDisconnect(); // lost due to either server restart, or a
+    } else {
+      // connnection idle timeout (the wait_timeout
+      throw err; // server variable configures this)
+    }
+  });
+}
+
+handleDisconnect();
+
 const baseUploadsPath = path.join(__dirname, "uploads");
 const cors = require("cors");
 // const videoRoutes=require('./Routes/videoRoutes.js');
@@ -86,15 +121,4 @@ app.use("/auth", authRoutes);
 app.use("/", (req, res) => {
   res.send("<h2>Hello beatlebuddy, Your app is live.");
   console.log("App is live.");
-});
-
-connection.connect((error) => {
-  if (error) {
-    console.error("Error connecting to MySQL database:", error);
-  } else {
-    app.listen(port, () => {
-      console.log(`listening on port:${port}`);
-    });
-    console.log("Connected to MySQL database!");
-  }
 });
